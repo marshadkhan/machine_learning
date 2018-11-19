@@ -1,0 +1,50 @@
+---
+title: "MachineLearning"
+author: "Muhammad Arshad khan"
+date: "November 19, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Model Report
+
+ In this assignment our goal is to use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants.They were asked to perform barbell lifts correctly and incorrectly in 5 different ways.In this model we will quanity and predict the Classe Variable which will determine how well the activity was conducted.The dataset we got was divided into two datasets.One is pml_training and other is pml_testing.The model building is being done on pml_training and testing is done on pml_testing file.
+
+## Model Building
+After doing the initial profiling of dataset i have decided to remove Zero Covarients and applied the method of nearZeroVar.For model building i have choosen the method of Random Forest and by using the variable raw_timestamp_part_1 i had got almost perfect accuray.So the final model built is predicting the classe variable based on raw_timestamp_part_1
+ 
+
+
+```{r Model_Building, echo=TRUE,message=FALSE,include=TRUE}
+library(caret)
+
+#Downloading File
+
+pml_training <- read.csv("d:/ds/machine/project/pml-training.csv")
+
+#Applying Zero Covarient Method
+pml_training_not_required_col<-nearZeroVar(pml_training)
+mak_pml_training <-pml_training[,-pml_training_not_required_col]
+
+pml_testing <- read.csv("d:/ds/machine/project/pml-testing.csv")
+#Applying Zero Covarient Method
+pml_testing_not_required_col<-nearZeroVar(pml_testing)
+mak_pml_testing <-pml_testing[,-pml_testing_not_required_col]
+
+#Model building
+mak_model <-train(classe~raw_timestamp_part_1,data=pml_training,model="rf")
+makpredict <- predict(mak_model,newdata=mak_pml_testing)
+
+
+```
+##Getting Accuray and Defining Error rate
+From below code we have observed that the accuracy of model is 99% and error rate for each variable is also depicted below
+```{r Model_interpretation, echo=TRUE}
+
+mak_model
+mak_model$finalModel
+
+```
